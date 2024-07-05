@@ -1,0 +1,21 @@
+FROM amazonlinux:2
+
+# Install Python and other dependencies
+RUN yum install -y python3 python3-pip zip
+
+# Install required Python packages
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt -t /lambda-package
+
+# Copy the Lambda function code and the create_zip.py script
+COPY get_vehicle_status.py /lambda-package/
+COPY create_zip.py /
+
+# Create a zip package using create_zip.py
+RUN python3 /create_zip.py
+
+# List the contents of /lambda-package for debugging
+RUN ls -la /lambda-package
+
+# List the contents of the root directory for debugging
+RUN ls -la /
